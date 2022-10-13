@@ -1,0 +1,82 @@
+---
+title: "ANA 515 Assignment 4"
+author: "Mahsa Karkhaneh"
+date: '2022'
+output: 
+  html_document:
+    theme: 
+      bootswatch: darkly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(knitr)
+library(bslib)
+library(dplyr)
+library(ggplot2)
+library(ranger)
+library(caret)
+library(data.table)
+library(rpart)
+library(rpart.plot)
+```
+
+#1.Discuss the business goal?
+
+In this Project we will discuss the credit card Fraud Detection.
+
+#2.identify where the dataset was retrieved from?
+
+This project data set and codes is accessible on :
+
+```{r, echo=TRUE}
+url <- "https://data-flair.training/blogs/data-science-machine-learning-project-credit-card-fraud-detection/"
+print(url)
+```
+
+#3.identify the code that imported and saved your dataset in R?
+
+```{r creditcard , echo=TRUE}
+creditcard <- read_csv("creditcard.csv")
+```
+
+We have data about `r nrow(creditcard)` credit card transactions includes fraud as well as non-fraudulent transactions.in following lines we'll learn more about this data set :
+
+```{r, echo=TRUE}
+table(creditcard$Class)
+summary(creditcard$Amount)
+names(creditcard)
+var(creditcard$Amount)
+```
+
+#5.discuss any data preparation, missing values and errors?
+
+In this section we are going to delete missing values and scale our data :
+
+```{r, echo=TRUE}
+na.omit(creditcard)
+creditcard$Amount=scale(creditcard$Amount)
+```
+
+By comparing the row numbers before and after the data cleaning, we conclude that there are no missing value in this data set, also we standardize the Amount column.
+
+#6.	discuss the modeling?
+
+we will implement a decision tree algorithm : 
+
+```{r, echo=TRUE}
+decisionTree_model <- rpart(Class ~ . , creditcard, method = 'class')
+predicted_val <- predict(decisionTree_model, creditcard, type = 'class')
+probability <- predict(decisionTree_model, creditcard, type = 'prob')
+```
+
+#7.produce and discuss the output?
+
+```{r, echo=TRUE}
+rpart.plot(decisionTree_model)
+```
+
+#8.provide explanation?
+
+As the above plot indicates the fraud boarder for each variable.
